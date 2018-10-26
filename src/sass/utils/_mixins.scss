@@ -1,0 +1,135 @@
+@mixin font-face ($font-family, $filename, $weight: 400, $style: normal, $local1: null, $local2: null) {
+  $list: ();
+
+  @if ($local1) {
+    $list: append($list, local($local1));
+  }
+
+  @if ($local2) {
+    $list: append($list, local($local2));
+  }
+
+  $list: append($list, url("../fonts/" + $filename + ".ttf"));
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+    src: to-string($list, ", ") format("truetype");
+  }
+}
+
+@mixin placeholder {
+  ::placeholder {@content}
+  ::-webkit-input-placeholder {@content}
+  :-moz-placeholder {@content}
+  ::-moz-placeholder {@content}
+  :-ms-input-placeholder {@content}  
+}
+
+@mixin generate-grid($width, $prefix, $cols) {
+  @if $width {
+    @media (min-width: $width) {
+      .col-#{$prefix} {
+        @for $i from 1 through $cols {
+          &-#{$i} {
+            width: to-fixed(percentage(1 / $cols * $i), 4);
+          }
+        }
+      }
+      .col-offset-#{$prefix} {
+        @for $i from 0 through $cols {
+          &-#{$i} {
+            margin-left: to-fixed(percentage(1 / $cols * $i), 4);
+          }
+        }
+      }
+
+      .hidden-#{$prefix} {
+        display: none !important;
+      }
+      .visible-#{$prefix} {
+        display: block !important;
+      }
+    }
+  } @else {
+    .col-#{$prefix} {
+      @for $i from 1 through $cols {
+        &-#{$i} {
+          width: to-fixed(percentage(1 / $cols * $i), 4);
+        }
+      }
+    }
+    .col-offset-#{$prefix} {
+      @for $i from 0 through $cols {
+        &-#{$i} {
+          margin-left: to-fixed(percentage(1 / $cols * $i), 4);
+        }
+      }
+    }
+
+    .hidden-#{$prefix} {
+      display: none !important;
+    }
+    .visible-#{$prefix} {
+      display: block !important;
+    }
+  }
+}
+
+@mixin make-slider ($name, $slides, $delay: 5, $transition: 1) {
+  // Get total time of animation
+  $total-time: ($delay + $transition) * $slides;
+  // As we have percentage as a time-line in @keyframes we need to convert numbers to percents.
+  // For example with the total time of 16s (4 slides, 3s delay and 1s transition) we have 0.16%
+  $perc: $total-time / 100;
+  // Then we need to know how many percents the given $delay represents
+  // So for $delay of 3s it will be 18.75%. 3s delay for 4 slides will take 18.75% from 100%
+  $delay-perc: $delay / $perc;
+  // The same calculation for transition between two slides
+  // So for $transition of 1s it will be 6.25%. 1s transition for 4 slides will take 6.25% from 100%
+  $transition-perc: $transition / $perc;
+  
+  @keyframes #{$name} {
+    // The first step is always 0 because we need to show the first slide
+    0% {
+      transform: translateX(0);
+    }
+    // Create loop so we can dynamically generate as many steps as it's needed based on the amount of slides
+    @for $i from 1 through $slides {
+      // Calculation of percent for delay
+      #{($i * $delay-perc + ($transition-perc * ($i - 1))) * 1%} {
+        transform: translateX(-(100 * ($i - 1) * 1%));
+      }
+      // Calculation of percent for transition
+      // If we don't do this check the calculations will lead to 100% in this case, so we need to set it manually.
+      // This case is required to replace the cloned slide with the first slide rapidly. So we can make our slider infinite
+      @if ($i == $slides) {
+        99.99999% {
+          transform: translateX(-(100 * $i * 1%));
+        }
+      } @else {
+        // Calculation of percent for transition
+        #{($i * $delay-perc + $transition-perc * $i) * 1%} {
+          transform: translateX(-(100 * $i * 1%));
+        }
+      }
+    }
+    // The last step is always 0 because we need to return to the initial state - the first slide
+    100% {
+      transform: translateX(0);
+    }
+  }
+}
+
+
+@mixin center-block ($position: absolute) {
+  position: $position;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@mixin flex-center ($display: flex) {
+  display: $display;
+  justify-content: center;
+  align-items: center;
+}

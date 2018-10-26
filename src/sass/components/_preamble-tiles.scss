@@ -1,0 +1,51 @@
+//preamble tiles
+.preamble-tiles {
+  margin-top: 40px;
+  position: relative;
+  &__item {
+    padding-bottom: 86%;
+    margin-bottom: $gutter;
+    position: relative;
+    &:before {
+      content: "";
+      border: 3px solid get-color("white");
+      position: absolute;
+      top: 6px;
+      bottom: 6px;
+      left: 6px;
+      right: 6px;
+    }
+  }
+  &__phrase {
+      padding-top: 94px;
+      width: 280px;
+      height: 280px;
+      font-family: unqoute(get-font("emphasis"));
+      background: url("../images/sprite.png") no-repeat -2px -122px;
+      line-height: to-rem(30);
+      font-size: to-rem(30);
+      text-align: center;
+      color: get-color("paleGold");
+      text-transform: uppercase;
+      @include center-block();
+  }
+}
+
+@media (min-width: #{get-screen("sm")}) {
+ .preamble-tiles {
+  &__item {
+    height: 250px;
+    padding-bottom: 0;
+    &:before {
+      border-width: 6px;
+    }
+  }
+ }
+}
+
+@media (min-width: #{get-screen("md")}) {
+  .preamble-tiles {
+    margin-top: 20px;
+  }
+}
+//preambler tiles end

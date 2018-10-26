@@ -1,0 +1,10 @@
+// Primary
+@include font-face("Roboto", "Roboto-Regular");
+
+// Title font
+@include font-face("Alegreya", "Alegreya-Regular");
+@include font-face("Alegreya", "Alegreya-Bold", 700);
+
+@include font-face("GiveYouGlory", "GiveYouGlory");
+// Special font
+@include font-face("Playfair", "PlayfairDisplay-Bold", 700);
